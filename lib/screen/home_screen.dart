@@ -12,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int maxNumber = 1000;
   List<int> randomNumbers = [
     123,
     456,
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Header(),
+              _Header(onPressed: onSettingsPop,),
               _Body(
                 randomNumbers: randomNumbers,
               ),
@@ -67,6 +68,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void onSettingsPop() async {
+    // list - add
+    // [HomeScreen(), SettingsScreen()]
+    final int? result = await Navigator.of(context).push(
+      // Route == Screen
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return SettingsScreen();
+        },
+      ),
+    );
+
+    print(result);
+
+    if (result != null) {
+      setState(() {
+        maxNumber = result;
+      });
+    }
+  }
+
   void onRandomNumberGenerate() {
     final rand = Random();
 
@@ -80,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // }
 
     while (newNumbers.length != 3) {
-      final number = rand.nextInt(1000);
+      final number = rand.nextInt(maxNumber);
 
       newNumbers.add(number);
     }
@@ -163,7 +185,12 @@ class _Body extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({Key? key}) : super(key: key);
+  final VoidCallback onPressed;
+
+  const _Header({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -176,18 +203,9 @@ class _Header extends StatelessWidget {
               color: Colors.white, fontSize: 30.0, fontWeight: FontWeight.w700),
         ),
         IconButton(
-          onPressed: () {
-            // list - add
-            // [HomeScreen(), SettingsScreen()]
-            Navigator.of(context).push(
-              // Route == Screen
-              MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return SettingsScreen();
-                },
-              ),
-            );
-          },
+          // Navigator.of(context).pop(maxNumber.toInt());을 실행했을 때,
+          // 미래의 언젠가 돌려받을 값이기 때문에 async, await를 사용합니다.
+          onPressed: onPressed,
           icon: Icon(
             Icons.settings,
             color: RED_COLOR,
