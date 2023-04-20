@@ -49,21 +49,28 @@ class _HomeScreenState extends State<HomeScreen> {
                     123,
                     456,
                     789,
-                  ].map(
-                    (x) => Row(
-                      children: x
-                          .toString()
-                          .split('')
-                          .map(
-                            (y) => Image.asset(
-                              'asset/img/$y.png',
-                              height: 70.0,
-                              width: 50.0,
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ).toList(),
+                  ]
+                  .asMap()
+                  .entries
+                      .map(
+                        (x) => Padding(
+                          padding: EdgeInsets.only(bottom: x.key == 2 ? 0 : 16.0),
+                          child: Row(
+                            children: x.value
+                                .toString()
+                                .split('')
+                                .map(
+                                  (y) => Image.asset(
+                                    'asset/img/$y.png',
+                                    height: 70.0,
+                                    width: 50.0,
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
                 // ),
               ),
